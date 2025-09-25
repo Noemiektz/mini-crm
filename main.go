@@ -1,28 +1,29 @@
 package main
 
 import (
-	"bufio" "flag" "fmt" "os" "strconv" "strings"
+	"bufio"
+	"flag"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+
+	"github.com/Noemiektz/mini-crm/models"
+	"github.com/Noemiektz/mini-crm/store"
 )
 
-type Contact struct {
-ID    int
-	Nom   string
-	Email string
-}
-
-var contacts = make(map[int]Contact)
-
+var contacts = make(map[int]models.Contact)
 var scanner = bufio.NewScanner(os.Stdin)
 
 func main() {
-
+	// Flags
 	idFlag := flag.Int("id", 0, "ID du contact")
 	nomFlag := flag.String("nom", "", "Nom du contact")
 	emailFlag := flag.String("email", "", "Email du contact")
 	flag.Parse()
 
 	if *idFlag != 0 && *nomFlag != "" && *emailFlag != "" {
-		contacts[*idFlag] = Contact{ID: *idFlag, Nom: *nomFlag, Email: *emailFlag}
+		contacts[*idFlag] = models.Contact{ID: uint(*idFlag), Nom: *nomFlag, Email: *emailFlag}
 		fmt.Println("Contact ajouté grâce aux flags !")
 	}
 
@@ -56,7 +57,6 @@ func main() {
 	}
 }
 
-
 func ajouterContact() {
 	fmt.Print("ID: ")
 	scanner.Scan()
@@ -80,7 +80,7 @@ func ajouterContact() {
 	scanner.Scan()
 	email := scanner.Text()
 
-	contacts[id] = Contact{ID: id, Nom: nom, Email: email}
+	contacts[id] = models.Contact{ID: uint(id), Nom: nom, Email: email}
 	fmt.Println("Contact ajouté")
 }
 
@@ -108,9 +108,9 @@ func supprimerContact() {
 
 	if _, ok := contacts[id]; ok {
 		delete(contacts, id)
-		fmt.Println( "Contact supprimé")
+		fmt.Println("Contact supprimé")
 	} else {
-		fmt.Println(" Contact introuvable")
+		fmt.Println("Contact introuvable")
 	}
 }
 
@@ -120,7 +120,7 @@ func mettreAJourContact() {
 	idStr := scanner.Text()
 	id, err := strconv.Atoi(strings.TrimSpace(idStr))
 	if err != nil {
-		fmt.Println(" ID invalide")
+		fmt.Println("ID invalide")
 		return
 	}
 
@@ -139,7 +139,7 @@ func mettreAJourContact() {
 			email = c.Email
 		}
 
-		contacts[id] = Contact{ID: id, Nom: nom, Email: email}
+		contacts[id] = models.Contact{ID: uint(id), Nom: nom, Email: email}
 		fmt.Println("Contact mis à jour")
 	} else {
 		fmt.Println("Contact introuvable")
